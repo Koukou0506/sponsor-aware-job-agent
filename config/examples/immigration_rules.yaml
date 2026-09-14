@@ -1,0 +1,7 @@
+version: example-2026-07-24
+regions:
+  UK: {route: UK_SKILLED_WORKER}
+  NL: {route: NL_HIGHLY_SKILLED_MIGRANT}
+  DE: {route: DE_EU_BLUE_CARD}
+  IE: {route: IE_CRITICAL_SKILLS}
+  HK: {route: HK_TTPS_C}

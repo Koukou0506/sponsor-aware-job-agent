@@ -1,0 +1,5 @@
+Sponsor-Aware Job Agent local release
+Version: 0.1.0
+Release date: 2026-07-24
+Source commit: 5d0ce2e
+Safety boundary: semi-automated autofill only; final submission is always manual.

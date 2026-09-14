@@ -1,0 +1,297 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sponsor-Aware Job Agent 本地教程</title><style>body{font-family:"Segoe UI","Microsoft YaHei",sans-serif;line-height:1.7;max-width:980px;margin:40px auto;padding:0 24px;color:#1f2937}h1{border-bottom:2px solid #111827;padding-bottom:12px}h2{margin-top:38px;border-left:5px solid #475569;padding-left:12px}h3{margin-top:26px}pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto}code{font-family:Consolas,monospace;background:#f1f5f9;padding:2px 5px;border-radius:4px}pre code{background:transparent;padding:0}li{margin:6px 0}strong{color:#111827}</style></head><body><h1>Sponsor-Aware Job Agent：Windows 本地解压、安装与使用教程</h1>
+<h2>1. 你下载到的是什么</h2>
+<p>这是源码型本地应用，不是无需依赖的单文件 EXE。首次安装会在项目目录内建立独立 Python 环境 <code>.venv</code>，并通过网络下载 Python 依赖与 Chromium。之后个人配置、简历、数据库和浏览器登录状态均保存在本机。</p>
+<p>发布包不包含你的真实简历、电话、邮箱、Cookie、API Key 或历史投递数据库。</p>
+<h2>2. 解压</h2>
+<ol>
+<li>下载 ZIP。</li>
+<li>右键选择“全部解压”。</li>
+<li>建议解压到短路径，例如：</li>
+</ol>
+<pre><code>
+D:\job-agent
+</code></pre>
+<p>不要放在 ZIP 内直接运行，也尽量避免 OneDrive 同步目录、过深路径和含特殊符号的目录。</p>
+<h2>3. 安装前准备</h2>
+<p>必须安装：</p>
+<ul>
+<li>Windows 10/11 64 位；</li>
+<li>Python 3.12 或更高版本；</li>
+<li>可联网下载依赖；</li>
+<li>Chromium、Chrome 或 Edge（Playwright 默认会下载独立 Chromium）。</li>
+</ul>
+<p>验证 Python：打开 PowerShell，执行：</p>
+<pre><code>
+py -3.12 --version
+</code></pre>
+<p>看到 <code>Python 3.12.x</code> 或更高版本即可。</p>
+<h2>4. 一键安装</h2>
+<p>双击：</p>
+<pre><code>
+scripts/windows/01_INSTALL_WINDOWS.bat
+</code></pre>
+<p>脚本会依次：</p>
+<ol>
+<li>检查 Python；</li>
+<li>创建 `.venv`；</li>
+<li>安装运行依赖；</li>
+<li>安装 Playwright Chromium；</li>
+<li>复制配置模板到 `config/local/`；</li>
+<li>初始化 `data/jobs.db`；</li>
+<li>执行系统检查和合成规则评估。</li>
+</ol>
+<p>如果 Playwright Chromium 下载失败，可稍后在项目目录的 PowerShell 中执行：</p>
+<pre><code>
+.\.venv\Scripts\Activate.ps1
+python -m playwright install chromium
+</code></pre>
+<p>如果 PowerShell 不允许激活脚本，可执行：</p>
+<pre><code>
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+</code></pre>
+<p>也可以完全不激活环境，直接调用 <code>.venv\Scripts\python.exe</code> 或 <code>.venv\Scripts\job-agent.exe</code>。</p>
+<h2>5. 配置个人信息</h2>
+<p>双击 <code>scripts/windows/06_OPEN_CONFIG_FOLDER.bat</code>，编辑 <code>config/local/</code> 下的文件。不要修改 <code>config/examples/</code>，否则升级时难以区分模板与个人数据。</p>
+<h3>5.1 profile.yaml</h3>
+<p>建议填写：</p>
+<pre><code>
+workspace_id: default
+candidate_id: default
+full_name: Your English Name
+first_name: Your
+last_name: Name
+email: your@email.com
+phone: &quot;+86 1xxxxxxxxxx&quot;
+location: Shanghai, China
+linkedin: &quot;&quot;
+github: &quot;&quot;
+</code></pre>
+<h3>5.2 preferences.yaml</h3>
+<pre><code>
+regions: [UK, NL, DE, IE, HK]
+role_tracks: [technical, technical_business]
+</code></pre>
+<h3>5.3 visa_answers.yaml</h3>
+<p>香港高才通尚未获批时可保留：</p>
+<pre><code>
+routes:
+  HK:
+    route_type: HK_TTPS_C
+    application_status: likely_eligible
+</code></pre>
+<p>状态必须反映真实情况。尚未获批时，不得把 <code>currently authorised to work in Hong Kong</code> 回答为 Yes。</p>
+<h3>5.4 screening_answers.yaml</h3>
+<p>这是工作权、Sponsor、搬迁、notice period 和薪资等固定答案的唯一可信来源。缺失答案会留空等待人工填写，不会自动猜测。</p>
+<p>示例：</p>
+<pre><code>
+answers:
+  HK:
+    likely:
+      currently_authorized: &quot;No&quot;
+      requires_employer_sponsorship: &quot;No; I plan to obtain work authorisation independently through the Top Talent Pass Scheme.&quot;
+      relocation_willingness: &quot;Yes&quot;
+      notice_period: &quot;To be confirmed&quot;
+      salary_expectation: &quot;Open to discussion&quot;
+</code></pre>
+<p>不要为了通过筛选而填写不真实答案。</p>
+<h2>6. 导入并审核简历</h2>
+<p>支持 PDF、DOCX、TXT、MD。</p>
+<p>最简单方式：把简历文件拖到 <code>scripts/windows/03_IMPORT_RESUME.bat</code> 上；也可以执行：</p>
+<pre><code>
+.\.venv\Scripts\job-agent.exe resume import &quot;D:\CV\CV_Eng.pdf&quot;
+</code></pre>
+<p>导入只会创建“待审核会话”，不会立即把识别结果当成事实。随后：</p>
+<ol>
+<li>双击 `scripts/windows/02_START_UI.bat`；</li>
+<li>打开 `Resume Import`；</li>
+<li>对每条识别结果选择 Accept、Edit、Reject、Merge 或 Resolve Conflict；</li>
+<li>只有批准的事实才允许用于后续简历和申请材料。</li>
+</ol>
+<h2>7. 配置职位源 boards.yaml</h2>
+<p>本版本不抓 LinkedIn/Indeed，而是直接读取四类公开 ATS 职位接口。每家公司需要一条 board 配置。</p>
+<pre><code>
+boards:
+  - platform: greenhouse
+    company_name: Example Company
+    board_token: example-company
+    region_hint: UK
+
+  - platform: lever
+    company_name: Another Company
+    board_token: another-company
+    region_hint: IE
+
+  - platform: ashby
+    company_name: Startup Name
+    board_token: startup-name
+    region_hint: NL
+
+  - platform: smartrecruiters
+    company_name: Global Company
+    board_token: GlobalCompany
+    region_hint: DE
+</code></pre>
+<p>如何识别 token：</p>
+<ul>
+<li>Greenhouse：职位页常见为 `boards.greenhouse.io/TOKEN` 或 `job-boards.greenhouse.io/TOKEN`；</li>
+<li>Lever：`jobs.lever.co/TOKEN`；</li>
+<li>Ashby：`jobs.ashbyhq.com/TOKEN`；</li>
+<li>SmartRecruiters：`jobs.smartrecruiters.com/TOKEN`。</li>
+</ul>
+<p>先配置少量目标公司，确认可运行后再扩充。错误 token 会在连接器健康状态中显示失败。</p>
+<h2>8. 配置 Sponsor/官方名录</h2>
+<p>把官方名单转换为 UTF-8 JSON 或 CSV，放入：</p>
+<pre><code>
+config/local/registries/
+</code></pre>
+<p>JSON结构示例见：</p>
+<pre><code>
+config/examples/registries/registry_example.json
+</code></pre>
+<p>必填字段包括：</p>
+<pre><code>
+registry_record_id, country, legal_name, registry_identifier,
+status, source, ruleset_version/version
+</code></pre>
+<p>可选字段包括：</p>
+<pre><code>
+canonical_domain, aliases, effective_date, retrieved_at, metadata
+</code></pre>
+<p>注意：</p>
+<ul>
+<li>英国与荷兰主要依赖官方雇主名录；</li>
+<li>德国不是传统 Sponsor 名单逻辑，主要判断岗位、学历与薪资路线；</li>
+<li>爱尔兰需要区分 Critical Skills 与 General Employment Permit；</li>
+<li>香港高才通属于候选人自带工作权，获批后 `no sponsorship` 不应自动淘汰岗位。</li>
+</ul>
+<p>名录和门槛会变化，使用前应更新。模糊公司名匹配只会送人工审核，不会直接当作官方证据。</p>
+<h2>9. 扫描与审核岗位</h2>
+<p>双击：</p>
+<pre><code>
+scripts/windows/04_RUN_DAILY_SCAN.bat
+</code></pre>
+<p>或执行：</p>
+<pre><code>
+.\.venv\Scripts\job-agent.exe run-daily --board-config config\local\boards.yaml
+</code></pre>
+<p>处理顺序：</p>
+<pre><code>
+抓取 → 标准化 → 去重 → 工作权判断 → 硬过滤 → 双轨评分 → 人工审核队列
+</code></pre>
+<p>然后启动 <code>scripts/windows/02_START_UI.bat</code>，在 <code>Job Review</code> 中查看：</p>
+<ul>
+<li>工作权路线和证据；</li>
+<li>是否存在硬失败；</li>
+<li>Technical / Technical-business 轨道；</li>
+<li>总分、匹配项、缺口和待核实项；</li>
+<li>是否生成申请材料。</li>
+</ul>
+<h2>10. 生成并批准材料</h2>
+<p>在 <code>Job Review</code> 点击 <code>Generate package</code>，或使用命令：</p>
+<pre><code>
+.\.venv\Scripts\job-agent.exe generate --job-id JOB_ID --candidate default
+</code></pre>
+<p>需要求职信时：</p>
+<pre><code>
+.\.venv\Scripts\job-agent.exe generate --job-id JOB_ID --candidate default --cover-letter
+</code></pre>
+<p>进入 <code>Application Package</code>：</p>
+<ol>
+<li>查看每句话引用的 fact ID 与原始事实；</li>
+<li>检查数字、技能、日期和成果状态；</li>
+<li>检查工作权、薪资和notice period；</li>
+<li>批准或拒绝材料。</li>
+</ol>
+<p>批准后的文件保存在：</p>
+<pre><code>
+artifacts/applications/&lt;package_id&gt;/resume.pdf
+artifacts/applications/&lt;package_id&gt;/cover_letter.pdf
+</code></pre>
+<h2>11. 半自动填表</h2>
+<p>只有材料批准后才能填表。命令格式：</p>
+<pre><code>
+.\.venv\Scripts\job-agent.exe autofill --application-id APPLICATION_ID --keep-open
+</code></pre>
+<p>系统会：</p>
+<ul>
+<li>打开申请页；</li>
+<li>识别并填写支持字段；</li>
+<li>高亮工作权、Sponsor、薪资、搬迁和notice period；</li>
+<li>遇到不确定字段或风险条件时暂停；</li>
+<li>停在最终提交之前。</li>
+</ul>
+<p>你必须亲自检查并点击外部网页的最终 Submit。系统没有生产代码会自动点击最终提交。</p>
+<p>以下情况必须人工处理：CAPTCHA、登录/邮箱验证、法律声明、平等机会信息、重复申请、职位关闭、字符超限和未知页面结构。</p>
+<h2>12. 日常使用顺序</h2>
+<pre><code>
+每周更新 boards 与官方名录
+→ 运行每日扫描
+→ 在 UI 审核高分岗位
+→ 生成并核对材料
+→ 半自动填表
+→ 手动提交
+→ 回到 UI 记录结果
+</code></pre>
+<h2>13. 自动定时扫描</h2>
+<p><code>scheduler_examples/register-windows-task.ps1</code> 提供 Windows 任务计划模板。定时任务只抓取、判断和评分，不生成材料、不打开浏览器、不提交申请。</p>
+<p>建议先手动稳定运行一周，再启用计划任务。</p>
+<h2>14. 数据备份和删除</h2>
+<p>重要本地目录：</p>
+<pre><code>
+config/local/                  个人配置
+data/jobs.db                   SQLite数据库
+artifacts/resume_sources/      导入的简历原件
+artifacts/applications/        生成材料
+browser_profiles/default/      ATS登录状态和Cookie
+</code></pre>
+<p>备份时关闭 UI 和浏览器，再复制 <code>config/local</code>、<code>data</code> 和 <code>artifacts</code>。浏览器Cookie不建议跨设备复制。</p>
+<p>清空动态数据：</p>
+<ol>
+<li>关闭 UI 和浏览器；</li>
+<li>删除 `data/jobs.db`；</li>
+<li>执行 `alembic upgrade head`；</li>
+<li>重新导入并审核简历。</li>
+</ol>
+<h2>15. 故障排查</h2>
+<h3>安装失败</h3>
+<p>确认网络、Python版本和磁盘路径，然后重新运行 <code>scripts/windows/01_INSTALL_WINDOWS.bat</code>。若依赖安装中断，可在 PowerShell 执行：</p>
+<pre><code>
+.\.venv\Scripts\python.exe -m pip install -e &quot;.[all]&quot;
+</code></pre>
+<h3>UI启动失败</h3>
+<pre><code>
+.\.venv\Scripts\job-agent.exe doctor
+.\.venv\Scripts\job-agent-ui.exe
+</code></pre>
+<h3>数据库错误</h3>
+<pre><code>
+.\.venv\Scripts\alembic.exe upgrade head
+</code></pre>
+<h3>Chromium找不到</h3>
+<p>先执行：</p>
+<pre><code>
+.\.venv\Scripts\python.exe -m playwright install chromium
+</code></pre>
+<p>也可临时指定本机浏览器：</p>
+<pre><code>
+.\.venv\Scripts\job-agent.exe autofill --application-id APPLICATION_ID --browser-executable &quot;C:\Program Files\Google\Chrome\Application\chrome.exe&quot; --keep-open
+</code></pre>
+<h3>扫描返回0</h3>
+<p>优先检查：</p>
+<ul>
+<li>board token 是否正确；</li>
+<li>公司是否仍使用对应ATS；</li>
+<li>网络能否访问公开接口；</li>
+<li>`boards.yaml` 缩进是否正确；</li>
+<li>该公司当前是否确实有公开职位。</li>
+</ul>
+<h2>16. 当前版本限制</h2>
+<ul>
+<li>需要手动维护目标公司列表和官方名录；</li>
+<li>不支持 LinkedIn、Indeed 或 Workday 全自动抓取；</li>
+<li>简历解析为启发式提取，必须人工审核；</li>
+<li>基础每日评分候选人快照仍较简化，后续应改为从批准事实库和偏好配置动态生成；</li>
+<li>多用户字段已预留，但当前为本地单用户；</li>
+<li>OpenAI API 为可选能力，基础筛选与固定材料流程无需填写 API Key；</li>
+<li>这不是移民或法律建议工具，最终工作权判断仍需核验官方规则与雇主要求。</li>
+</ul></body></html>

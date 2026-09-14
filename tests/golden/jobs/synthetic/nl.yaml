@@ -1,0 +1,23 @@
+case_id: synthetic-nl-001
+country: NL
+legal_entity: "Example Netherlands B.V."
+route_conclusion: NL_HIGHLY_SKILLED_MIGRANT
+evidence_levels: [A, B]
+role_track: technical_business
+reviewed_apply: true
+predicted_apply: true
+explicit_no_sponsorship: false
+predicted_no_sponsorship: false
+entity_match_correct: true
+duplicate_expected: false
+duplicate_blocked: false
+fact_traceability: true
+standard_fields_total: 10
+standard_fields_filled: 9
+unapproved_submission_count: 0
+work_authorization_factual_errors: 0
+resume_track: technical_business
+matches: [English working proficiency]
+gaps: [Local market experience]
+reviewer: synthetic-fixture
+reviewed_at: "2026-07-24"

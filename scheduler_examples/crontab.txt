@@ -1,0 +1,1 @@
+0 8 * * * cd /absolute/path/to/sponsor-aware-job-agent && .venv/bin/python -m job_agent.scheduling run-daily >> data/logs/daily.log 2>&1

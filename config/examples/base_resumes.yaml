@@ -1,0 +1,8 @@
+technical:
+  base_resume_id: technical-v1
+  section_order: [summary, skills, projects, education]
+  fact_ids: [example_technical_fact]
+technical_business:
+  base_resume_id: technical-business-v1
+  section_order: [summary, experience, projects, skills, education]
+  fact_ids: [example_delivery_fact]

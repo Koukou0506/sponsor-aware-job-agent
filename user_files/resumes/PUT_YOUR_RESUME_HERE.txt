@@ -1,0 +1,2 @@
+将需要导入的 PDF、DOCX、TXT 或 Markdown 简历放在此处，或直接拖到 scripts/windows/03_IMPORT_RESUME.bat 上。
+真实简历不会随项目上传，也不应提交到 Git。

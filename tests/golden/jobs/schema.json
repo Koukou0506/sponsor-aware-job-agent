@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sponsor-Aware Job Agent Golden Case",
+  "type": "object",
+  "required": [
+    "case_id", "country", "legal_entity", "route_conclusion",
+    "evidence_levels", "role_track", "reviewed_apply", "predicted_apply",
+    "entity_match_correct", "resume_track", "matches", "gaps",
+    "reviewer", "reviewed_at"
+  ],
+  "additionalProperties": false
+}

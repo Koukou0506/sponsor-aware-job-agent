@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+@page { size: A4; margin: 16mm; }
+body { font-family: Arial, Helvetica, sans-serif; font-size: 10.5pt; line-height: 1.35; color: #111; }
+h1 { font-size: 19pt; margin: 0 0 8px; }
+h2 { font-size: 12pt; margin: 14px 0 5px; border-bottom: 1px solid #333; }
+ul { margin: 4px 0 0 18px; padding: 0; }
+li { margin: 0 0 3px; }
+.skills { margin: 0; }
+.contact { margin: -4px 0 8px; color: #333; }
+</style>
+</head>
+<body>
+<h1>{{ name }}</h1>
+{% if contact %}<p class="contact">{{ contact | join(' · ') }}</p>{% endif %}
+{% if summary %}<section><h2>Summary</h2><ul>{% for item in summary %}<li>{{ item }}</li>{% endfor %}</ul></section>{% endif %}
+{% if skills %}<section><h2>Skills</h2><p class="skills">{{ skills | join(', ') }}</p></section>{% endif %}
+{% for section in sections %}<section><h2>{{ section.heading }}</h2><ul>{% for bullet in section.bullets %}<li>{{ bullet }}</li>{% endfor %}</ul></section>{% endfor %}
+</body>
+</html>

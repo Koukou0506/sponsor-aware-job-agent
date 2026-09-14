@@ -1,0 +1,16 @@
+technical:
+  work_authorization_fit: 0.30
+  skill_fit: 0.25
+  experience_fit: 0.15
+  role_transition_fit: 0.10
+  language_fit: 0.08
+  company_signal: 0.07
+  recency: 0.05
+technical_business:
+  work_authorization_fit: 0.30
+  skill_fit: 0.12
+  experience_fit: 0.20
+  role_transition_fit: 0.18
+  language_fit: 0.08
+  company_signal: 0.07
+  recency: 0.05

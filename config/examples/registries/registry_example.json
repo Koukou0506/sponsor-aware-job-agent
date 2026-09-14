@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "version": "replace-with-source-date",
+    "source": "replace-with-official-source-name"
+  },
+  "records": [
+    {
+      "registry_record_id": "example-001",
+      "country": "UK",
+      "legal_name": "Example Limited",
+      "canonical_domain": "example.com",
+      "registry_identifier": "EXAMPLE-001",
+      "status": "active",
+      "aliases": ["Example Ltd"]
+    }
+  ]
+}

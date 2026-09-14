@@ -1,0 +1,23 @@
+case_id: synthetic-ie-001
+country: IE
+legal_entity: "Example Ireland Limited"
+route_conclusion: IE_CRITICAL_SKILLS
+evidence_levels: [A, B]
+role_track: technical_business
+reviewed_apply: false
+predicted_apply: false
+explicit_no_sponsorship: true
+predicted_no_sponsorship: true
+entity_match_correct: true
+duplicate_expected: false
+duplicate_blocked: false
+fact_traceability: true
+standard_fields_total: 10
+standard_fields_filled: 9
+unapproved_submission_count: 0
+work_authorization_factual_errors: 0
+resume_track: technical_business
+matches: [English working proficiency]
+gaps: [Local market experience]
+reviewer: synthetic-fixture
+reviewed_at: "2026-07-24"

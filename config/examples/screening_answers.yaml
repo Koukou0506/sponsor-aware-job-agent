@@ -1,0 +1,10 @@
+answers:
+  HK:
+    likely:
+      currently_authorized: "No"
+      requires_employer_sponsorship: "No; I plan to obtain work authorisation independently through the Top Talent Pass Scheme."
+      relocation_willingness: "Yes"
+    eligible:
+      currently_authorized: "Yes"
+      requires_employer_sponsorship: "No"
+      relocation_willingness: "Yes"

@@ -1,0 +1,4 @@
+routes:
+  HK:
+    route_type: HK_TTPS_C
+    application_status: likely_eligible

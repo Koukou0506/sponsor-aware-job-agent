@@ -1,0 +1,17 @@
+boards:
+  - platform: greenhouse
+    company_name: Example Ltd
+    board_token: example-greenhouse
+    region_hint: UK
+  - platform: lever
+    company_name: Example Ltd
+    board_token: example-lever
+    region_hint: IE
+  - platform: ashby
+    company_name: Example Ltd
+    board_token: example-ashby
+    region_hint: NL
+  - platform: smartrecruiters
+    company_name: Example Ltd
+    board_token: example-smartrecruiters
+    region_hint: DE
