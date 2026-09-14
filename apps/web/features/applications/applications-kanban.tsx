@@ -1,0 +1,3 @@
+import type { Application } from "@/lib/api/types";
+const columns=["shortlisted","materials_generated","awaiting_review","approved","autofill_started","ready_to_submit","submitted","screening","interview","offer","rejected","withdrawn"];
+export function ApplicationsKanban({items}:{items:Application[]}){return <div className="kanban">{columns.filter(c=>items.some(a=>a.current_state===c)||["approved","ready_to_submit","submitted","interview"].includes(c)).map(c=><div className="kanban-col" key={c}><b>{c.replaceAll("_"," ")}</b>{items.filter(a=>a.current_state===c).map(a=><div className="card" style={{marginTop:10}} key={a.application_id}><b>{a.job_title}</b><div className="muted">{a.company}</div></div>)}</div>)}</div>}

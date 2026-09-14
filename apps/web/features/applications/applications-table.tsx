@@ -1,0 +1,2 @@
+import type { Application } from "@/lib/api/types";
+export function ApplicationsTable({items}:{items:Application[]}){return <table><thead><tr>{["Company","Role","Country","State","Autofill","Submitted","Outcome"].map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{items.map(a=><tr key={a.application_id}><td>{a.company}</td><td>{a.job_title}</td><td>{a.country}</td><td><span className="badge">{a.current_state}</span></td><td>{a.autofill_status??"—"}</td><td>{a.submitted_at?new Date(a.submitted_at).toLocaleString():"—"}</td><td>{a.outcome??"—"}</td></tr>)}</tbody></table>}

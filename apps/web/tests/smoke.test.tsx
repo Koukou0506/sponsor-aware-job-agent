@@ -1,0 +1,4 @@
+import { render,screen } from "@testing-library/react"; import { describe,it,expect,vi } from "vitest"; import { QueryClient,QueryClientProvider } from "@tanstack/react-query"; import { AppShell } from "@/components/shell/app-shell";
+vi.mock("next/link",()=>({default:({children,...p}:any)=><a {...p}>{children}</a>}));
+vi.stubGlobal("fetch",vi.fn(async()=>({ok:true,json:async()=>({mode:"demo",capabilities:{live_job_scan:false,resume_upload:false,autofill_launch:false,material_generation:true,application_tracking:true,final_submission:false}})})) as any);
+describe("shell",()=>{it("renders product name",()=>{const q=new QueryClient();render(<QueryClientProvider client={q}><AppShell><div/></AppShell></QueryClientProvider>);expect(screen.getByText("Sponsor-Aware Job Agent")).toBeInTheDocument();})})

@@ -1,0 +1,2 @@
+import { Card } from "@/components/ui/card"; import type { PackageView } from "@/lib/api/types";
+export function ScreeningTab({pkg}:{pkg:PackageView}){return <div className="grid">{pkg.screening_answers.map((a,i)=><Card key={i}><div className="section-title"><b>{a.question}</b><span className={`badge ${a.risk_level==="high"?"bad":a.risk_level==="medium"?"warn":""}`}>{a.source_type}</span></div><p>{a.answer||<span className="muted">Manual answer required</span>}</p>{a.requires_review&&<small className="muted">Requires human review before use.</small>}</Card>)}</div>}

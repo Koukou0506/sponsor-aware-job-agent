@@ -1,56 +1,70 @@
 # Sponsor-Aware Job Agent
 
-一个面向国际求职者的本地优先、签证感知型职位发现与半自动投递系统。
+面向需要签证/工作权判断的国际求职者的本地优先求职 Agent。系统先判断岗位是否值得投，再进行通用技能匹配，而不是单纯追求海投数量。
 
-[English README](README.md) · [架构](docs/ARCHITECTURE.md) · [设计决策](docs/DESIGN_DECISIONS.md) · [演示流程](docs/DEMO.md)
+## 两种运行模式
 
-## 核心问题
+- **Demo Mode**：公开展示用，只使用合成岗位与合成候选人数据，不读取真实简历、SQLite、Cookie 或浏览器配置。
+- **Local Mode**：实际求职用，可接入真实 ATS、简历事实库、工作权判断、申请材料、Tracker 和受控 Playwright 自动填表。
 
-传统自动投递工具通常先做关键词匹配，再填表；但对于需要工作许可或签证路径的候选人，真正的硬约束往往是：公司是否具备对应资质、岗位/薪资/合同是否满足路线要求，或者候选人是否已有独立工作权。
+**最终 Submit 永远由用户手动点击。**
 
-这个项目因此把 **Work Authorisation Fit 放在 Skill Fit 之前**。
-
-## MVP能力
-
-- Greenhouse / Lever / Ashby / SmartRecruiters 职位接入；
-- 英国、荷兰、德国、爱尔兰、香港五地区工作权规则；
-- Technical 与 Technical-business 双岗位轨道；
-- 简历导入、事实拆分、人工批准与来源追溯；
-- 岗位级材料生成和固定筛选题；
-- Playwright 半自动填表；
-- 最终提交必须由用户人工完成；
-- SQLite + YAML 的本地数据与配置体系。
-
-## 关键设计
+## 新 Web 架构
 
 ```text
-职位抓取
-→ 去重与标准化
-→ 工作权/签证判断
-→ 岗位轨道分类与评分
-→ 人工审核
-→ 基于已验证事实生成材料
-→ 人工批准
-→ 自动填表
-→ 人工最终提交
-→ 投递追踪
+Next.js
+  -> FastAPI /api/v1
+  -> Application Services
+  -> Immigration / Matcher / Materials / Storage / Autofill
 ```
 
-香港候选人自带工作权路线与英国/荷兰等雇主担保路线使用不同逻辑，避免把所有国家压缩成一个简单的 `needs_sponsorship` 字段。
+浏览器不独立实现签证、评分、事实校验或状态机规则。
 
-## 快速开始
+## 页面
 
-推荐先看英文 README 的完整安装步骤。Windows 用户可同时参考：
+- Dashboard
+- Discover Jobs
+- Job Detail / Review
+- Application Workspace
+- Applications Table / Kanban
+- Resume & Facts
+- Immigration Evidence
+- Secret-safe Settings
 
-- `docs/guides/windows-local-setup-zh.md`
-- `scripts/windows/`
+## Codex Skills
 
-公开版包含一组可运行的 smoke tests：
+仓库内置两套 Skill：
+
+- `sponsor-job-agent-dev`：修改/扩展该仓库时使用。
+- `sponsor-job-agent-ops`：扫描岗位、审核、生成材料、准备 Autofill 等实际操作时使用。
+
+安装：
 
 ```bash
-pytest tests/public -q
-python -m compileall -q src
-job-agent evaluate-golden tests/golden/jobs/synthetic
+bash scripts/install-skills.sh
 ```
 
-> 本仓库是作品集/MVP，不提供移民或法律意见；正式使用时必须更新官方 Sponsor 名录、签证规则与薪资门槛。
+Windows：
+
+```powershell
+./scripts/install-skills.ps1
+```
+
+详见 `docs/CODEX_SKILLS.md`。
+
+## Demo 启动
+
+```bash
+python -m pip install -e '.[all,dev]'
+APP_MODE=demo PYTHONPATH=src python -m uvicorn job_agent.api.app:app --host 127.0.0.1 --port 8000
+```
+
+另开终端：
+
+```bash
+cd apps/web
+npm install
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000 npm run dev -- --hostname 127.0.0.1 --port 3000
+```
+
+真实本地模式见 `docs/WEB_LOCAL_SETUP.md`。

@@ -1,0 +1,3 @@
+import { useMutation,useQuery,useQueryClient } from "@tanstack/react-query"; import { apiFetch } from "@/lib/api/client"; import type { Application } from "@/lib/api/types";
+export function useApplications(){return useQuery({queryKey:["applications"],queryFn:()=>apiFetch<Application[]>("/applications")});}
+export function useTransition(){const qc=useQueryClient();return useMutation({mutationFn:({id,state}:{id:string;state:string})=>apiFetch<Application>(`/applications/${id}/transition`,{method:"POST",body:JSON.stringify({new_state:state})}),onSuccess:()=>qc.invalidateQueries({queryKey:["applications"]})});}

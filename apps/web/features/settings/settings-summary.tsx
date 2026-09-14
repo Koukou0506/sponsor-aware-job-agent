@@ -1,0 +1,2 @@
+import { Card } from "@/components/ui/card"; import type { SettingsSummary as T } from "./api";
+export function SettingsSummary({data}:{data:T}){return <div className="grid metrics">{Object.entries(data).filter(([k])=>k!=="mode").map(([k,v])=><Card key={k}><div className="muted">{k.replaceAll("_"," ")}</div><pre style={{whiteSpace:"pre-wrap",fontFamily:"inherit"}}>{JSON.stringify(v,null,2)}</pre></Card>)}</div>}

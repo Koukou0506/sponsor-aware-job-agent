@@ -1,0 +1,1 @@
+"use client"; import { useParams } from "next/navigation"; import { ApplicationWorkspace } from "@/features/application-workspace/workspace"; export default function Page(){const p=useParams<{jobId:string}>();return <ApplicationWorkspace jobId={p.jobId}/>}

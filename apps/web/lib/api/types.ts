@@ -1,0 +1,11 @@
+export type AppMode = "demo" | "local";
+export type Capabilities = { live_job_scan:boolean; resume_upload:boolean; autofill_launch:boolean; material_generation:boolean; application_tracking:boolean; final_submission:boolean };
+export type Meta = { mode:AppMode; capabilities:Capabilities };
+export type WorkAuthorisation = { status:string; fit:number|null; route:string|null; confidence:number|null; evidence:Array<Record<string,unknown>|string>; unresolved:string[]; ruleset_version:string|null };
+export type JobSummary = { job_id:string; review_id?:string|null; company:string; title:string; country:string; city?:string|null; role_track:string; work_authorisation:WorkAuthorisation; total_score:number; language?:string|null; ats?:string|null; published_at?:string|null; review_status?:string|null };
+export type JobDetail = JobSummary & { requirements:string[]; fit: { total:number; skill?:number|null; experience?:number|null; role_transition?:number|null; language?:number|null; strengths?:string[]; gaps?:string[] } };
+export type JobsPage = { items:JobSummary[]; page:number; page_size:number; total:number };
+export type Dashboard = { counts:Record<string,number>; country_distribution:Array<{key:string;count:number}>; track_distribution:Array<{key:string;count:number}>; application_funnel:Array<{key:string;count:number}>; recent_high_fit_jobs:JobSummary[]; alerts:Array<{severity?:string;message?:string}> };
+export type Claim = { claim_id:string; text:string; source_fact_ids:string[]; source_facts?:Array<{fact_id?:string;text?:string;raw_fact?:string;source?:string}>; original_sources?:string[]; transformation_type:string; validation_status:string; reviewer_approved:boolean };
+export type PackageView = { package_id:string; job_id?:string|null; job_title:string; company:string; base_resume_id?:string|null; validation_status:string; review_status:string; claims:Claim[]; screening_answers:Array<{question:string;answer:string;source_type:string;requires_review:boolean;risk_level:string}>; cover_letter_text?:string|null };
+export type Application = { application_id:string; package_id?:string|null; job_id:string; job_title:string; company:string; country:string; current_state:string; autofill_status?:string|null; submitted_at?:string|null; outcome?:string|null };
