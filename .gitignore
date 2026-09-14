@@ -19,3 +19,6 @@ browser_profiles/
 user_files/resumes/*
 !user_files/resumes/PUT_YOUR_RESUME_HERE.txt
 *.egg-info/
+apps/web/node_modules/
+apps/web/.next/
+dist/

@@ -1,0 +1,2 @@
+import type { Claim } from "@/lib/api/types";
+export function ClaimProvenance({claim}:{claim:Claim}){const sources=claim.source_facts?.length?claim.source_facts.map(f=>f.text??f.raw_fact??f.source??f.fact_id):claim.original_sources??claim.source_fact_ids;return <details className="provenance"><summary>Source facts ({claim.source_fact_ids.join(", ")})</summary><ul>{sources.map((s,i)=><li key={i}>{s}</li>)}</ul></details>}

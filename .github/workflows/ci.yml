@@ -1,0 +1,78 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -e '.[all,dev]'
+      - run: APP_MODE=demo python -m pytest tests/api tests/public -q
+      - run: python -m compileall -q src
+      - run: APP_MODE=demo python -m job_agent.api.verify_contract
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package.json
+      - run: npm install
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test -- --run
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:8000
+
+  skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m pip install -e '.[all,dev]'
+      - run: python -m pytest tests/skills -q
+      - run: bash scripts/install-skills.sh --dry-run --target /tmp/skills
+
+  public-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python scripts/scan_public_repo.py
+
+  demo-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: python -m pip install -e '.[all,dev]'
+      - run: cd apps/web && npm install
+      - run: cd apps/web && npx playwright install --with-deps chromium
+      - name: Start demo API
+        run: APP_MODE=demo PYTHONPATH=src python -m uvicorn job_agent.api.app:app --host 127.0.0.1 --port 8000 > /tmp/api.log 2>&1 &
+      - name: Wait for API
+        run: for i in {1..40}; do curl -fsS http://127.0.0.1:8000/api/v1/health && exit 0; sleep 1; done; cat /tmp/api.log; exit 1
+      - name: Start web
+        run: cd apps/web && NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000 npm run dev -- --hostname 127.0.0.1 --port 3000 > /tmp/web.log 2>&1 &
+      - name: Wait for web
+        run: for i in {1..60}; do curl -fsS http://127.0.0.1:3000 && exit 0; sleep 1; done; cat /tmp/web.log; exit 1
+      - run: cd apps/web && WEB_BASE_URL=http://127.0.0.1:3000 npm run e2e

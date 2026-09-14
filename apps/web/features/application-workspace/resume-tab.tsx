@@ -1,0 +1,2 @@
+import { Card } from "@/components/ui/card"; import type { PackageView } from "@/lib/api/types"; import { ClaimProvenance } from "./claim-provenance";
+export function ResumeTab({pkg}:{pkg:PackageView}){return <div className="grid">{pkg.claims.map(c=><Card key={c.claim_id}><div className="section-title"><b>{c.text}</b><span className={`badge ${c.validation_status==="verified"?"good":"bad"}`}>{c.validation_status}</span></div><ClaimProvenance claim={c}/></Card>)}</div>}

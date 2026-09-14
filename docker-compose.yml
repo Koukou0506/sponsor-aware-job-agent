@@ -1,0 +1,20 @@
+services:
+  demo-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    environment:
+      APP_MODE: demo
+      JOB_AGENT_CORS_ORIGINS: http://localhost:3000
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  demo-web:
+    build:
+      context: ./apps/web
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+    depends_on:
+      - demo-api
+    ports:
+      - "127.0.0.1:3000:3000"

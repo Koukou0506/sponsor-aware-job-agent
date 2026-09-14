@@ -1,0 +1,2 @@
+"use client"; import { Card } from "@/components/ui/card"; import { useSettingsSummary } from "@/features/settings/api"; import { SettingsSummary } from "@/features/settings/settings-summary";
+export default function Page(){const q=useSettingsSummary();return <div className="grid"><div><h1>Settings</h1><p className="muted">Status only. Secrets, cookies and API keys are edited in local files and are never returned by this API.</p></div>{q.data?<SettingsSummary data={q.data}/>:<Card>{q.isError?"Settings summary unavailable.":"Loading…"}</Card>}</div>}
